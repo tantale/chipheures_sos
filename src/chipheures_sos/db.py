@@ -6,6 +6,8 @@ import sqlite3
 
 import click
 
+from chipheures_sos.model.oder import Order
+
 
 class Database(object):
     """Database Connection"""
@@ -38,6 +40,18 @@ class Database(object):
         click.secho(msg.format(count=count), fg="green")
         name_len = max(map(len, names))
         for name in names:
-            rows = cursor.execute('SELECT COUNT(*) FROM `{name}`'.format(name=name)).fetchall()
+            rows = cursor.execute("SELECT COUNT(*) FROM `{name}`".format(name=name)).fetchall()
             count = rows[0][0]
             click.echo(u"- {name:<{name_len}} : {count:>6}".format(name=name, count=count, name_len=name_len))
+
+    def get_orders(self):
+        cursor = self._conn.cursor()
+        orders = [
+            Order.from_row(*row)
+            for row in cursor.execute("SELECT uid, order_ref, project_cat, creation_date, close_date FROM `Order`")
+        ]
+        return orders
+
+    def get_last_event_date(self, order):
+        # fixme: implement get_last_event_date
+        return None
