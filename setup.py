@@ -25,7 +25,7 @@ def read(filename):
 setup(
     # --- identity
     name="ChipHeures_SOS",
-    version="20.0.0",
+    version="20.0.1",
     # --- description
     description="Tool for database maintenance of the Chip'heures web application",
     long_description=u"{readme}\n{changes}".format(readme=read("README.rst"), changes=read("CHANGELOG.rst")),
