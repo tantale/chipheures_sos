@@ -6,7 +6,7 @@ import datetime
 
 
 def _parse_date(date_string):
-    return None if date_string is None else datetime.datetime.strptime(date_string, "%Y-%m-%d").date()
+    return None if date_string is None else datetime.datetime.strptime(date_string, "%Y-%m-%d")
 
 
 class Order(object):
@@ -44,4 +44,4 @@ class Order(object):
         return order
 
     def __str__(self):
-        return u'Order#{uid:05d}: "{order_ref}"'.format(uid=self._uid, order_ref=self.order_ref)
+        return u'Order #{uid:05d}: "{order_ref}"'.format(uid=self._uid, order_ref=self.order_ref)

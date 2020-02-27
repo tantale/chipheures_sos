@@ -2,6 +2,7 @@
 """
 Chip'Heures Database
 """
+import datetime
 import sqlite3
 
 import click
@@ -9,10 +10,14 @@ import click
 from chipheures_sos.model.oder import Order
 
 
+def _parse_date_time(date_string):
+    return None if date_string is None else datetime.datetime.strptime(date_string[:19], "%Y-%m-%d %H:%M:%S")
+
+
 class Database(object):
     """Database Connection"""
 
-    excluded_table_names = {u"alembic_version"}
+    excluded_table_names = {u"alembic_version", u"beaker_cache"}
 
     def __init__(self, database):
         self._database = database
@@ -53,5 +58,22 @@ class Database(object):
         return orders
 
     def get_last_event_date(self, order):
-        # fixme: implement get_last_event_date
-        return None
+        cursor = self._conn.cursor()
+        sql = """
+        SELECT CalEvent.event_end
+        FROM `OrderPhase` INNER JOIN `CalEvent`
+        ON OrderPhase.uid = CalEvent.order_phase_uid
+        WHERE OrderPhase.order_uid = {order.uid}
+        ORDER BY CalEvent.event_end DESC LIMIT 1
+        """.format(
+            order=order
+        )
+
+        row = next(iter(cursor.execute(sql)), None)
+        return None if row is None else _parse_date_time(row[0])
+
+    def close_order(self, order, close_date):
+        sql = "UPDATE `Order` SET close_date = ? WHERE uid = ?"
+        cursor = self._conn.cursor()
+        cursor.execute(sql, (close_date.date().isoformat(), order.uid))
+        self._conn.commit()
