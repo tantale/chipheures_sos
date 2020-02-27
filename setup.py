@@ -29,6 +29,7 @@ setup(
     # --- description
     description="Tool for database maintenance of the Chip'heures web application",
     long_description=u"{readme}\n{changes}".format(readme=read("README.rst"), changes=read("CHANGELOG.rst")),
+    long_description_content_type="text/x-rst",
     author="Laurent LAPORTE",
     author_email="tantale.solutions@gmail.com",
     url="",
